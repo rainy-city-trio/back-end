@@ -18,13 +18,8 @@ const connection = mysql.createConnection({
 });
 
 
-
-//connection.connect()
-
-
-//Create new tasks
+//Create recipe list
 app.post("/recipe", function (request, response) {
- // const taskToBeSaved = request.body
   
   const sent = request.body;
   const dietary = sent.dietary;
@@ -36,9 +31,7 @@ app.post("/recipe", function (request, response) {
   if (dietary==="none"){
     string="SELECT * FROM dietary_reqs;";
   }
-  
-  
-  
+    
   // get the list of recipeIds filtered by dietary
   connection.query(string, function (error, results, fields) {
     if (error) {
@@ -48,7 +41,7 @@ app.post("/recipe", function (request, response) {
       });
     }
     else {
-      // res now contains the recipeIds filtered by dietary
+      // res now contains the recipeIds filtered by dietary reqs
    var dietaryId=results[0].dietaryId;
    //Add wildcard
    dietaryId=dietaryId+'%';
@@ -59,7 +52,6 @@ app.post("/recipe", function (request, response) {
     if (dietary==="none") {
       string='SELECT * FROM recipe_dietary JOIN recipes ON recipe_dietary.recipeId = recipes.recipeId  JOIN recipe_ingredients ON recipe_ingredients.recipeId = recipes.recipeId  JOIN ingredients ON ingredients.ingredientId = recipe_ingredients.ingredientId JOIN recipe_season ON recipe_season.recipeId = recipes.recipeId JOIN seasons ON seasons.seasonId=recipe_season.seasonId WHERE recipe_dietary.dietaryId<5;';
     }
-    
     
      connection.query(string,[dietaryId], function (error, results, fields) 
      {
@@ -107,18 +99,18 @@ app.post("/recipe", function (request, response) {
       }
       
 //filter array to remove duplicate ingredients
-
-//noMultsArray=[]
 for (let i=0; i<array.length;i++){
-  noMultsArray=[]
+  var noMultsArray=[]
   var newArray=[]
     for (let j=0;j<array[i].ingredients.length; j++){
-  // compare the 1st item with the one ahead of it.
+  // see if this item is already in the array. 
   if (newArray.indexOf(array[i].ingredients[j].ingredient)===-1){
+    //if its not in the array, copy it into the new array & the verification array
     noMultsArray.push(array[i].ingredients[j])
     newArray.push(array[i].ingredients[j].ingredient)
   }
     }
+    // copy the new array into the object
   array[i].ingredients=noMultsArray
   }
 
@@ -140,28 +132,9 @@ if (ingLength<=objIngLength){
       }
       }
     }
-      
-
       array[j].ingredientMatch=matchcount;
       }
       }
-
-// // filter array to remove duplicate ingredients
-
-// for (let i=0; i<array.length;i++){
-// var newArray=[]
-//   for (let j=0;j<array[i].ingredients.length; j++){
-// // compare the 1st item with the one ahead of it.
-// if (newArray.indexOf(array[i].ingredients[j].ingredient)===-1){
-//   newArray.push(array[i].ingredients[j].ingredient)
-// } else {
-//   // delete array[i].ingredients[j]
-//   array[i].ingredients[j].ingredient="repeat"
-// }
-//   }
-
-// }
-
 
 
   // this is the final response    
@@ -172,55 +145,48 @@ if (ingLength<=objIngLength){
     });
 });
 
-
-
-
-
 //UPDATE tasks
 app.put("/recipe/:id", function (request, response) {
-  //  const customer = request.body
-  const id = request.params.id
-  // connection.query('UPDATE Tasks SET description = "'+taskToBeUpdated.description+'", done = '+taskToBeUpdated.completed+', userid = '+taskToBeUpdated.userid+' WHERE taskid = '+taskId, function(err, result, fields) {
-  connection.query('UPDATE Tasks SET done = 1 WHERE taskId = ' + id, function (err, result, fields) {
-    if (err !== null) {
-      console.log("Something went wrong updating the task", err)
-      response.send(500)
-    } else {
-      response.send("Item Updated")
-    }
-  })
+  // //  const customer = request.body
+  // const id = request.params.id
+  // // connection.query('UPDATE Tasks SET description = "'+taskToBeUpdated.description+'", done = '+taskToBeUpdated.completed+', userid = '+taskToBeUpdated.userid+' WHERE taskid = '+taskId, function(err, result, fields) {
+  // connection.query('UPDATE Tasks SET done = 1 WHERE taskId = ' + id, function (err, result, fields) {
+  //   if (err !== null) {
+  //     console.log("Something went wrong updating the task", err)
+  //     response.send(500)
+  //   } else {
+  //     response.send("Item Updated")
+  //   }
+  // })
 })
-
 
 // Fetch tasks
 app.get("/recipe", function (request, response) {
-  connection.query("SELECT * FROM Tasks", function (err, result, fields) {
-    if (err !== null) {
-      console.log("error fetching tasks", err)
-      response.send(500)
-    } else
-      response.json({ tasks: result })
-  })
+  // connection.query("SELECT * FROM Tasks", function (err, result, fields) {
+  //   if (err !== null) {
+  //     console.log("error fetching tasks", err)
+  //     response.send(500)
+  //   } else
+  //     response.json({ tasks: result })
+  // })
 })
-
 
 //Delete tasks
 app.delete("/recipe/:id", function (request, response) {
-  const id = request.params.id
-  connection.query("DELETE FROM Tasks WHERE taskId = ?", [id], function (err, result, fields) {
-    if (err !== null) {
-      console.log("Something went wrong deleting the task", err)
-      response.send(500)
-    } else {
-      response.send("Item Deleted")
-    }
-  })
+  // const id = request.params.id
+  // connection.query("DELETE FROM Tasks WHERE taskId = ?", [id], function (err, result, fields) {
+  //   if (err !== null) {
+  //     console.log("Something went wrong deleting the task", err)
+  //     response.send(500)
+  //   } else {
+  //     response.send("Item Deleted")
+  //   }
+  // })
 })
-
 
 module.exports.handler = serverless(app)
 
-// https://sw10ki9oa4.execute-api.eu-west-2.amazonaws.com/dev/recipe
+//Endpoint https://6q4rpz2qb6.execute-api.eu-west-2.amazonaws.com/dev/recipe
 // to deploy:- serverless deploy function --function reecipe
 // if just the tasks file has been update you can use 'serverless deploy' on its own
  
