@@ -1,0 +1,38 @@
+
+
+service: recipes
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: eu-west-2
+
+
+functions:
+  tasks:
+    handler: recipe.handler
+    events:
+      - http:
+          path: recipe
+          method: get
+          cors: true
+      - http:
+          path: recipe/{ids}
+          method: delete
+          cors: true    
+      - http:
+          path: recipe
+          method: post
+          cors: true   
+      - http:
+          path: recipe/{ids}
+          method: put
+          cors: true   
+
+
+# this is a plugin we installed to test our API in an offline environment
+plugins:
+  - serverless-offline
+
+
+
