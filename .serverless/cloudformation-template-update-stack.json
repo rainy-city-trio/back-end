@@ -105,7 +105,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/recipes/dev/1561133527558-2019-06-21T16:12:07.558Z/recipes.zip"
+          "S3Key": "serverless/recipes/dev/1561378403341-2019-06-24T12:13:23.341Z/recipes.zip"
         },
         "FunctionName": "recipes-dev-tasks",
         "Handler": "recipe.handler",
@@ -124,14 +124,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "TasksLambdaVersionUKb3P5lFipWNfroQHLGUWZiQPtoyfj54OMWLEs1co": {
+    "TasksLambdaVersionJgVEvQ641Z1Q1hTueE9qGAEVEgga3dL8Gpnm0MD3AcM": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "TasksLambdaFunction"
         },
-        "CodeSha256": "AgOq9d5nQ6pM6dF52wnoaHrK2STbQ4ZLM6gia7sPdAA="
+        "CodeSha256": "NEj8qqT+6xGQgClVPXeqr9o/uAT/1KQzjdsEqs6XDbE="
       }
     },
     "ApiGatewayRestApi": {
@@ -438,7 +438,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1561133523481": {
+    "ApiGatewayDeployment1561378399914": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -512,7 +512,7 @@
     "TasksLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "TasksLambdaVersionUKb3P5lFipWNfroQHLGUWZiQPtoyfj54OMWLEs1co"
+        "Ref": "TasksLambdaVersionJgVEvQ641Z1Q1hTueE9qGAEVEgga3dL8Gpnm0MD3AcM"
       }
     },
     "ServiceEndpoint": {

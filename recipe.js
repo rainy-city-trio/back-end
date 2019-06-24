@@ -71,11 +71,13 @@ app.post("/recipe", function (request, response) {
     }
     else {
       
-     //   response.json(results);
+    //    response.json(results);
       
+//this bit checks the name of the recipe for multiple entries and collates all of the ingredients into a single recipe entry.
+
       var array=[];
     var matched=0;
-    
+    // loop the length of the ingredients in the results list
       for (let i=0; i<results.length; i++){
         matched=0;
         // set up the item for the ingredients
@@ -83,6 +85,7 @@ app.post("/recipe", function (request, response) {
         results[i].ingredientMatch=0;
          //is the object already in the array?
   
+         // inner loop to put the recipe with ingredients into the new array
   for (let k=0; k<array.length; k++)
   {
     
@@ -95,6 +98,7 @@ app.post("/recipe", function (request, response) {
     }}  
   
    if (matched===0){
+
          results[i].ingredients.push({ingredient:results[i].ingredientName, qty:results[i].quantity});
          //push the object onto the array
          array.push(results[i]);
@@ -102,7 +106,25 @@ app.post("/recipe", function (request, response) {
    }
       }
       
+//filter array to remove duplicate ingredients
+
+//noMultsArray=[]
+for (let i=0; i<array.length;i++){
+  noMultsArray=[]
+  var newArray=[]
+    for (let j=0;j<array[i].ingredients.length; j++){
+  // compare the 1st item with the one ahead of it.
+  if (newArray.indexOf(array[i].ingredients[j].ingredient)===-1){
+    noMultsArray.push(array[i].ingredients[j])
+    newArray.push(array[i].ingredients[j].ingredient)
+  }
+    }
+  array[i].ingredients=noMultsArray
+  }
+
+
       //array now holds the data
+      //This bit counts the matches and only searches the first X chars based on the length of the entered ingredient
       
       for (let j=0; j<array.length; j++){
       var object=array[j];
@@ -110,15 +132,39 @@ app.post("/recipe", function (request, response) {
       for (let i=0; i<object.ingredients.length;i++){
         
       for (let k=0; k<ingredients.length; k++){
-      if (object.ingredients[i].ingredient===ingredients[k]){
+        let ingLength=ingredients[k].length
+        let objIngLength=object.ingredients[i].ingredient.length
+if (ingLength<=objIngLength){
+      if (object.ingredients[i].ingredient.slice(0,ingLength)===ingredients[k].slice(0,ingLength)){
        matchcount=matchcount+1;
       }
       }
+    }
       
+
       array[j].ingredientMatch=matchcount;
       }
       }
-      
+
+// // filter array to remove duplicate ingredients
+
+// for (let i=0; i<array.length;i++){
+// var newArray=[]
+//   for (let j=0;j<array[i].ingredients.length; j++){
+// // compare the 1st item with the one ahead of it.
+// if (newArray.indexOf(array[i].ingredients[j].ingredient)===-1){
+//   newArray.push(array[i].ingredients[j].ingredient)
+// } else {
+//   // delete array[i].ingredients[j]
+//   array[i].ingredients[j].ingredient="repeat"
+// }
+//   }
+
+// }
+
+
+
+  // this is the final response    
     response.json(array);
   }
   });
