@@ -3,10 +3,9 @@ const serverless = require("serverless-http");
 const mysql = require("mysql");
 const app = express();
 const cors = require('cors');
-const body_parser= require('body-parser')
 
 app.use(cors());
-app.use(body_parser.json());
+app.use(express.json());
 
 
 
@@ -32,7 +31,7 @@ app.post("/recipe", function (request, response) {
   const ingredients = sent.ingredients;
   var string;
 
-  string="SELECT * FROM dietary_reqs WHERE dietName=?;";
+  string="SELECT * FROM dietary_reqs WHERE dietName='"+dietary+"';";
   
   if (dietary==="none"){
     string="SELECT * FROM dietary_reqs;";
@@ -41,7 +40,7 @@ app.post("/recipe", function (request, response) {
   
   
   // get the list of recipeIds filtered by dietary
-  connection.query(string,[dietary], function (error, results, fields) {
+  connection.query(string, function (error, results, fields) {
     if (error) {
       console.log("Error saving new task", error);
       response.status(500).json({
@@ -51,6 +50,8 @@ app.post("/recipe", function (request, response) {
     else {
       // res now contains the recipeIds filtered by dietary
    var dietaryId=results[0].dietaryId;
+   //Add wildcard
+   dietaryId=dietaryId+'%';
   //response.json({dietaryId});
   
   
